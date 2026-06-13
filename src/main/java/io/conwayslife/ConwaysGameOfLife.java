@@ -4,10 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Random;
 
-public class ConwaysLife {
+public class ConwaysGameOfLife {
     private final JFrame frame = new JFrame("Conway's Game of Life");
     private final int cellRowCount = 60;
     private final Color liveColor = Color.WHITE;
@@ -17,7 +16,7 @@ public class ConwaysLife {
     private final boolean[][] cellGridStatus = new boolean[cellRowCount][cellRowCount];
     private final JPanel[][] cellPanels = new JPanel[cellRowCount][cellRowCount]; // To panels to display
 
-    public ConwaysLife() {
+    public ConwaysGameOfLife() {
         int windowSize = 600;
         frame.setSize(windowSize, windowSize);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
