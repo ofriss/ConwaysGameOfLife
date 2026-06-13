@@ -2,58 +2,55 @@ package io.conwayslife;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Random;
 
 public class ConwaysGameOfLife {
+    private final Random random = new Random();
     private final JFrame frame = new JFrame("Conway's Game of Life");
-    private final int cellRowCount = 60;
+    private final int windowSize = 800;
+    private final int cellRowCount = 100;
     private final Color liveColor = Color.WHITE;
     private final Color deadColor = Color.BLACK;
 
-    // Cell Grids; 2 grids so processing of new grid is relative to the same original grid
     private final boolean[][] cellGridStatus = new boolean[cellRowCount][cellRowCount];
-    private final JPanel[][] cellPanels = new JPanel[cellRowCount][cellRowCount]; // To panels to display
+
+    private final JPanel gamePanel = new JPanel() {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            int cellWidth  = getWidth()  / cellRowCount;
+            int cellHeight = getHeight() / cellRowCount;
+            for (int row = 0; row < cellRowCount; row++) {
+                for (int col = 0; col < cellRowCount; col++) {
+                    g.setColor(cellGridStatus[row][col] ? liveColor : deadColor);
+                    g.fillRect(col * cellWidth, row * cellHeight, cellWidth, cellHeight);
+                }
+            }
+        }
+    };
 
     public ConwaysGameOfLife() {
-        int windowSize = 600;
-        frame.setSize(windowSize, windowSize);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setResizable(false);
-        frame.setLayout(new GridLayout(cellRowCount, cellRowCount)); // create a grid cellRowCount X cellRowCount
+
+        gamePanel.setPreferredSize(new Dimension(windowSize, windowSize));
+        frame.add(gamePanel);
+        frame.pack();
 
         // Randomly generate a base grid to start off of
         // Set all cell panels to opaque, they are not by default
         for (int row = 0; row < cellRowCount; row++) {
             for (int col = 0; col < cellRowCount; col++) {
-                Random random = new Random();
                 cellGridStatus[row][col] = random.nextBoolean();
-                JPanel cellPanel = new JPanel();
-                cellPanel.setOpaque(true);
-                cellPanel.setBackground(cellGridStatus[row][col] ? liveColor : deadColor);
-                frame.add(cellPanel);
-                cellPanels[row][col] = cellPanel;
             }
         }
 
-        Timer procTimer = new Timer(100, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                processCellsStatus();
-                drawGrid();
-            }
-        });
-        procTimer.start();
+        new Timer(100, e -> {
+            processCellsStatus();
+            gamePanel.repaint();
+        }).start();
 
         frame.setVisible(true);
-    }
-
-    // Flushes the cellGridStatus to the GUI
-    private void drawGrid() {
-        for (int row = 0; row < cellRowCount; row++)
-            for (int col = 0; col < cellRowCount; col++)
-                cellPanels[row][col].setBackground(cellGridStatus[row][col] ? liveColor : deadColor);
     }
 
     // Counts the amount of live surrounding neighbors (8)
