@@ -8,7 +8,7 @@ public class ConwaysGameOfLife {
     private final Random random = new Random();
     private final JFrame frame = new JFrame("Conway's Game of Life");
     private final int windowSize = 800;
-    private final int cellRowCount = 100;
+    private final int cellRowCount = 50;
     private final Color liveColor = Color.WHITE;
     private final Color deadColor = Color.BLACK;
 
@@ -50,6 +50,7 @@ public class ConwaysGameOfLife {
             gamePanel.repaint();
         }).start();
 
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
